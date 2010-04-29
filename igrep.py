@@ -18,8 +18,8 @@ Examples of usage:
 
 __author__  = 'Jeremy Cantrell <jmcantrell@gmail.com>'
 __url__     = 'http://jmcantrell.me'
-__date__    = 'Thu 2009-02-26 21:19:22 (-0500)'
-__license__ = 'GPL'
+__date__    = 'Fri 2010-04-23 13:09:39 (-0400)'
+__license__ = 'BSD'
 
 import os, operator
 from imageutils.size import same_aspect_ratio
