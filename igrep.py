@@ -16,14 +16,9 @@ Examples of usage:
 
 """ #}}}
 
-__author__  = 'Jeremy Cantrell <jmcantrell@gmail.com>'
-__url__     = 'http://jmcantrell.me'
-__date__    = 'Fri 2010-04-23 13:09:39 (-0400)'
-__license__ = 'BSD'
-
 import os, operator
 from imageutils.size import same_aspect_ratio
-from scriptutils.options import Options
+from argparse import ArgumentParser
 from PIL import Image
 
 def is_size_match(size1, size2): #{{{1
@@ -71,18 +66,19 @@ def image_info(image): #{{{1
             ])
 
 def get_options(): #{{{1
-    opts = Options(args='[path...]')
-    opts.add_option('-r', '--recursive', action='store_true', help='Recurse into directories.')
-    opts.add_option('-a', '--aspect', help='Search by aspect ratio (ex: 4:3).')
-    opts.add_option('-v', '--invert-match', action='store_true', help='Invert the search logic.')
-    opts.add_option('-W', '--width', type='int', help='Specify width.')
-    opts.add_option('-H', '--height', type='int', help='Specify height.')
-    opts.add_option('-I', '--info', action='store_true', help='Display image information.')
+    opts = ArgumentParser(description="Find image files by attributes.")
+    opts.add_argument('paths', metavar='PATH', nargs='+', help="path to search for images")
+    opts.add_argument('-r', '--recursive', action='store_true', help='recurse into directories')
+    opts.add_argument('-a', '--aspect', help='search by aspect ratio (ex: 4:3)')
+    opts.add_argument('-v', '--invert-match', action='store_true', help='invert the search logic')
+    opts.add_argument('-W', '--width', type=int, help='specify width')
+    opts.add_argument('-H', '--height', type=int, help='specify height')
+    opts.add_argument('-I', '--info', action='store_true', help='display image information')
     return opts.parse_args()
 
 def main(): #{{{1
-    opts, args = get_options()
-    images = get_images(args, opts.recursive)
+    opts = get_options()
+    images = get_images(opts.paths, opts.recursive)
     comp = operator.not_ if opts.invert_match else operator.truth
     if opts.aspect:
         sa = [float(x) for x in opts.aspect.split(':')]
