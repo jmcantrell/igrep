@@ -18,7 +18,7 @@ Examples of usage:
 
 import os, operator
 from imageutils.size import same_aspect_ratio
-from argparse import ArgumentParser
+from scriptutils.arguments import Arguments
 from PIL import Image
 
 def is_size_match(size1, size2): #{{{1
@@ -65,28 +65,28 @@ def image_info(image): #{{{1
             operator.mul(*image.size)
             ])
 
-def get_options(): #{{{1
-    opts = ArgumentParser(description="Find image files by attributes.")
-    opts.add_argument('paths', metavar='PATH', nargs='+', help="path to search for images")
-    opts.add_argument('-r', '--recursive', action='store_true', help='recurse into directories')
-    opts.add_argument('-a', '--aspect', help='search by aspect ratio (ex: 4:3)')
-    opts.add_argument('-v', '--invert-match', action='store_true', help='invert the search logic')
-    opts.add_argument('-W', '--width', type=int, help='specify width')
-    opts.add_argument('-H', '--height', type=int, help='specify height')
-    opts.add_argument('-I', '--info', action='store_true', help='display image information')
-    return opts.parse_args()
+def get_arguments(): #{{{1
+    a = Arguments(description="Find image files by attributes.")
+    a.add_argument('paths', metavar='PATH', nargs='+', help="path to search for images")
+    a.add_argument('-r', '--recursive', action='store_true', help='recurse into directories')
+    a.add_argument('-a', '--aspect', help='search by aspect ratio (ex: 4:3)')
+    a.add_argument('-v', '--invert-match', action='store_true', help='invert the search logic')
+    a.add_argument('-W', '--width', type=int, help='specify width')
+    a.add_argument('-H', '--height', type=int, help='specify height')
+    a.add_argument('-I', '--info', action='store_true', help='display image information')
+    return a.parse_args()
 
 def main(): #{{{1
-    opts = get_options()
-    images = get_images(opts.paths, opts.recursive)
-    comp = operator.not_ if opts.invert_match else operator.truth
-    if opts.aspect:
-        sa = [float(x) for x in opts.aspect.split(':')]
+    args = get_arguments()
+    images = get_images(args.paths, args.recursive)
+    comp = operator.not_ if args.invert_match else operator.truth
+    if args.aspect:
+        sa = [float(x) for x in args.aspect.split(':')]
         images = (i for i in images if comp(same_aspect_ratio(i.size, sa)))
-    if opts.width or opts.height:
-        s = (opts.width, opts.height)
+    if args.width or args.height:
+        s = (args.width, args.height)
         images = (i for i in images if comp(is_size_match(i.size, s)))
-    if opts.info:
+    if args.info:
         for i in images:
             print image_info(i)
     else:
