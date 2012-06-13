@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-# DOCUMENTATION {{{
 """Find image files by attributes like dimension and aspect ratio
 
 Examples of usage:
@@ -14,16 +13,18 @@ Examples of usage:
     Options can be combined:
         igrep -r -a 4:3 -W >=1600 .
 
-""" #}}}
+"""
 
 import os, operator
 from imageutils.size import same_aspect_ratio
 from scriptutils.arguments import Arguments
 from PIL import Image
 
-def is_size_match(size1, size2): #{{{1
+
+def is_size_match(size1, size2):  # {{{1
     for pair in zip(size1, size2):
-        if None in pair: continue
+        if None in pair:
+            continue
         if pair[1][0:2] == '<=':
             if pair[0] <= int(pair[1][2:]): continue
             return False
@@ -36,27 +37,32 @@ def is_size_match(size1, size2): #{{{1
         elif pair[1][0] == '>':
             if pair[0] > int(pair[1][1:]): continue
             return False
-        if pair[0] != pair[1]: return False
+        if pair[0] != pair[1]:
+            return False
     return True
 
-def get_images(paths, recursive=False): #{{{1
+
+def get_images(paths, recursive=False):  # {{{1
     for f in get_files(paths, recursive):
         try:
             yield Image.open(f)
         except (IOError, ValueError):
             pass
 
-def get_files(paths, recursive=False): #{{{1
+
+def get_files(paths, recursive=False):  # {{{1
     for path in paths:
         if os.path.isdir(path):
-            if not recursive: continue
+            if not recursive:
+                continue
             for root, dirs, files in os.walk(path):
                 for f in files:
                     yield os.path.join(root, f)
         elif os.path.isfile(path):
             yield path
 
-def image_info(image): #{{{1
+
+def image_info(image):  # {{{1
     return '\t'.join(str(s) for s in [
             image.filename,
             image.format,
@@ -65,7 +71,8 @@ def image_info(image): #{{{1
             operator.mul(*image.size)
             ])
 
-def get_arguments(): #{{{1
+
+def get_arguments():  # {{{1
     a = Arguments(description="Find image files by attributes.")
     a.add_argument('paths', metavar='PATH', nargs='+', help="path to search for images")
     a.add_argument('-r', '--recursive', action='store_true', help='recurse into directories')
@@ -76,7 +83,8 @@ def get_arguments(): #{{{1
     a.add_argument('-I', '--info', action='store_true', help='display image information')
     return a.parse_args()
 
-def main(): #{{{1
+
+def main():  # {{{1
     args = get_arguments()
     images = get_images(args.paths, args.recursive)
     comp = operator.not_ if args.invert_match else operator.truth
@@ -93,6 +101,6 @@ def main(): #{{{1
         for i in images:
             print i.filename
 
-#}}}
 
-if __name__ == '__main__': main()
+if __name__ == '__main__':
+    main()

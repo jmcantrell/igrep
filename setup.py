@@ -4,7 +4,7 @@ from setuptools import setup
 
 setup(
         name='igrep',
-        version='0.9.3',
+        version='0.9.4',
         description='Find image files by attributes like dimension and aspect ratio.',
         author='Jeremy Cantrell',
         author_email='jmcantrell@gmail.com',
