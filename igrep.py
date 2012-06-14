@@ -101,6 +101,7 @@ def main():  # {{{1
         for i in images:
             print i.filename
 
+# }}}1
 
 if __name__ == '__main__':
     main()
